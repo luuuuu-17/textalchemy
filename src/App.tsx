@@ -1,17 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchAlchemyText } from "./lib/api";
 import { buildMorphMap, pickSeedChars } from "./lib/charMorph";
-import { animateMorph } from "./lib/morphAnimation";
+import { animatePhase1, animatePhase2 } from "./lib/morphAnimation";
 
 type ViewState = "idle" | "typing" | "waiting" | "morphing" | "result";
 
 const PLACEHOLDER = "想说点什么？";
 
-function computeFontSize(text: string): string {
-  const length = [...text].length;
-  if (length <= 12) return "clamp(2rem, 6vw, 2.6rem)";
-  if (length <= 22) return "clamp(1.7rem, 5.2vw, 2.1rem)";
-  return "clamp(1.4rem, 4.8vw, 1.8rem)";
+function computeFontSize(_text: string): string {
+  return "1.8rem";
 }
 
 function normalizeInline(text: string): string {
@@ -28,8 +25,7 @@ export default function App() {
     const [hideCaret, setHideCaret] = useState(false);
 
     const inputRef = useRef<HTMLInputElement>(null);
-  const oldRef = useRef<HTMLDivElement>(null);
-  const newRef = useRef<HTMLDivElement>(null);
+    const oldRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
       useEffect(() => {
@@ -52,26 +48,42 @@ export default function App() {
   }, [status]);
 
   const canSubmit = input.trim().length > 0 && status !== "waiting" && status !== "morphing";
-  const computedFontSize = computeFontSize(input || resultText || PLACEHOLDER);
+  const computedFontSize = useMemo(() => {
+    // 所有文字层统一用同一套字体大小
+    const textForSize = sourceText || resultText || input || PLACEHOLDER;
+    return computeFontSize(textForSize);
+  }, [sourceText, resultText, input]);
 
-        async function runMorph(fromText: string, toText: string): Promise<void> {
-        setStatus("morphing");
-        await new Promise((resolve) => setTimeout(resolve, 100));
+                async function runMorph(fromText: string, toText: string): Promise<void> {
+                setStatus("morphing");
+                await new Promise((resolve) => setTimeout(resolve, 50));
 
-        const oldNodes = oldRef.current ? Array.from(oldRef.current.querySelectorAll("[data-char]")) : [];
-        const nextNodes = newRef.current ? Array.from(newRef.current.querySelectorAll("[data-char]")) : [];
-        const map = buildMorphMap(fromText, toText);
+                const oldEl = oldRef.current;
+                if (!oldEl) return;
 
-        const movePairs = map
-          .filter((item) => item.kind === "move" && item.fromIndex !== null && item.toIndex !== null)
-          .map((item) => ({
-            from: oldNodes[item.fromIndex as number] as HTMLElement,
-            to: nextNodes[item.toIndex as number] as HTMLElement,
-          }))
-          .filter((pair) => pair.from && pair.to);
+                const map = buildMorphMap(fromText, toText);
 
-        await animateMorph(oldNodes as HTMLElement[], nextNodes as HTMLElement[], movePairs);
-        setStatus("result");
+                // 找出哪些旧索引需要淡出（不匹配）
+                const movedFromIndices = new Set(
+                  map.filter((item) => item.fromIndex !== null).map((item) => item.fromIndex as number),
+                );
+                // 找出哪些旧索引需要保留（匹配）
+                const keptIndices = new Set(
+                  map.filter((item) => item.kind === "move").map((item) => item.fromIndex as number),
+                );
+                // 要淡出的索引 = 所有有 fromIndex 的 - 匹配(move)的
+                const fadeOutIndices = new Set(
+                  [...movedFromIndices].filter((i) => !keptIndices.has(i)),
+                );
+
+                // 阶段1：不匹配的字符淡出
+                await animatePhase1(oldEl, fadeOutIndices);
+
+                // 此时旧层中只剩下匹配的字符
+                // 阶段2：用同一个容器构建新文字层，做飞入+淡入动画
+                await animatePhase2(oldEl, toText, fromText);
+                setStatus("result");
+                setInput("");
   }
 
     async function onSubmit(): Promise<void> {
@@ -96,9 +108,7 @@ export default function App() {
     }
   }
 
-        const showOverlay = status === "morphing" || status === "result";
-    const showOld = status === "waiting" || status === "morphing";
-    const inputHidden = status === "waiting" || status === "morphing";
+        const inputHidden = status === "waiting" || status === "morphing";
 
     return (
     <main
@@ -115,38 +125,28 @@ export default function App() {
         </div>
 
         <div ref={containerRef} className="relative w-full min-h-[140px] flex items-center justify-center">
-                    {showOld && sourceText && (
-                      <div
-                        ref={oldRef}
-                        className="absolute inset-0 flex items-center justify-center whitespace-nowrap break-keep"
-                        style={{ fontSize: computedFontSize, pointerEvents: "none" }}
-                      >
-                        {[...sourceText].map((char, idx) => (
-                          <span key={`source-${idx}`} data-char className="inline-block">
-                            {char}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {showOverlay && resultText && (
-                      <div
-                        ref={newRef}
-                        className="absolute inset-0 flex items-center justify-center whitespace-normal break-keep"
-                        style={{ fontSize: computeFontSize(resultText), pointerEvents: "none" }}
-                      >
-                        {[...resultText].map((char, idx) => (
-                          <span key={`next-${idx}`} data-char className="inline-block">
-                            {char}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                                                                                {sourceText && status !== "result" && (
+                                                                                  <div
+                                                                                    ref={oldRef}
+                                                                                    className="absolute inset-0 flex items-center justify-center whitespace-nowrap break-keep"
+                                                                                    style={{
+                                                                                      fontSize: computedFontSize,
+                                                                                      pointerEvents: "none",
+                                                                                      letterSpacing: "-0.02em",
+                                                                                    }}
+                                                                                  >
+                                                                                    {[...sourceText].map((char, idx) => (
+                                                                                      <span key={`source-${idx}`} data-char className="inline-block">
+                                                                                        {char}
+                                                                                      </span>
+                                                                                    ))}
+                                                                                  </div>
+                                                                                )}
 
                     {status === "result" && resultText && (
             <div
-              className="absolute inset-0 flex items-center justify-center whitespace-normal break-keep select-none px-4"
-              style={{ fontSize: computeFontSize(resultText) }}
+                            className="absolute inset-0 flex items-center justify-center whitespace-normal break-keep select-none px-4"
+              style={{ fontSize: computedFontSize, letterSpacing: "-0.02em" }}
             >
               {[...resultText].map((char, idx) => (
                 <span key={`result-${idx}`} className="inline-block">
@@ -175,10 +175,10 @@ export default function App() {
                 void onSubmit();
               }
             }}
-                        className={`w-full bg-transparent border-none outline-none text-center whitespace-nowrap overflow-x-auto ${typeClass} ${
+                        className={`w-full bg-transparent border-none outline-none text-center ${typeClass} ${
               inputHidden ? "opacity-0 pointer-events-none select-none" : ""
             } ${hideCaret ? "caret-hidden" : ""}`}
-            style={{ fontSize: computedFontSize }}
+            style={{ fontSize: computedFontSize, letterSpacing: "-0.02em" }}
             placeholder={status === "idle" && input.length === 0 ? PLACEHOLDER : ""}
             disabled={status === "waiting" || status === "morphing"}
           />
