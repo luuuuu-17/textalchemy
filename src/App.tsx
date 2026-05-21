@@ -146,10 +146,10 @@ export default function App() {
                                                                                   </div>
                                                                                 )}
 
-                    {status === "result" && resultText && (
+                                        {status === "result" && resultText && (
             <div
-                            className="absolute inset-0 flex items-center justify-center whitespace-normal break-keep select-none px-4"
-              style={{ fontSize: computedFontSize, letterSpacing: "-0.02em" }}
+                            className="absolute inset-0 flex items-center justify-center whitespace-normal break-keep select-none px-6 sm:px-10"
+              style={{ fontSize: computedFontSize, letterSpacing: "-0.02em", maxWidth: "90%" }}
             >
               {[...resultText].map((char, idx) => (
                 <span key={`result-${idx}`} className="inline-block">
