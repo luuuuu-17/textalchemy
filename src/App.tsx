@@ -69,7 +69,9 @@ export default function App() {
                 );
                 // 找出哪些旧索引需要保留（匹配）
                 const keptIndices = new Set(
-                  map.filter((item) => item.kind === "move").map((item) => item.fromIndex as number),
+                  map.filter((item) => item.kind === "move").map((item) => item.fromIndex as 
+                  number),
+                  
                 );
                 // 要淡出的索引 = 所有有 fromIndex 的 - 匹配(move)的
                 const fadeOutIndices = new Set(
@@ -119,10 +121,10 @@ export default function App() {
     >
                         <section className="mx-auto flex min-h-screen w-full max-w-[500px] flex-col items-center justify-start pt-[25vh] gap-10">
         <div className="w-full text-center">
-                                        <h1 className="text-xl tracking-[0.25em] uppercase opacity-80">
-                      TextAlchemy
-                    </h1>
-                    <div className="mx-auto mt-5 h-px bg-gradient-to-r from-transparent via-[#2D2D2D] to-transparent" style={{ width: "4.5em" }} />
+                                        <h1 className="text-2xl tracking-[0.2em] uppercase opacity-80">
+                                          TextAlchemy
+                                        </h1>
+                                        <div className="mx-auto mt-6 h-px bg-gradient-to-r from-transparent via-[#2D2D2D] to-transparent" style={{ width: "7em" }} />
         </div>
 
         <div ref={containerRef} className="relative w-full min-h-[140px] flex items-center justify-center">
