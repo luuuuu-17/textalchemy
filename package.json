@@ -27,6 +27,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@vercel/node": "^5.8.3",
     "@vitejs/plugin-react": "latest",
     "autoprefixer": "latest",
     "postcss": "latest",
@@ -36,4 +37,3 @@
     "vite": "latest"
   }
 }
-

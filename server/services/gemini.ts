@@ -62,7 +62,7 @@ export async function generateAlchemyReply(
         { role: "system", content: buildSystemPrompt(lang, seedChars) },
         { role: "user", content: userText },
       ],
-      temperature: 0.85,
+      temperature: 0.65,
 
       max_tokens: 100,
     });
