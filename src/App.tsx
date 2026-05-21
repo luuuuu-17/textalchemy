@@ -119,10 +119,10 @@ export default function App() {
     >
                         <section className="mx-auto flex min-h-screen w-full max-w-[500px] flex-col items-center justify-start pt-[25vh] gap-10">
         <div className="w-full text-center">
-                    <h1 className="text-base tracking-[0.32em] uppercase opacity-80">
-            TextAlchemy
-          </h1>
-          <div className="mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-[#2D2D2D] to-transparent" />
+                    <h1 className="text-lg tracking-[0.3em] uppercase opacity-80">
+                      TextAlchemy
+                    </h1>
+                    <div className="mx-auto mt-4 h-px w-10 bg-gradient-to-r from-transparent via-[#2D2D2D] to-transparent" />
         </div>
 
         <div ref={containerRef} className="relative w-full min-h-[140px] flex items-center justify-center">
