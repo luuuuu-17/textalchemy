@@ -117,11 +117,12 @@ export default function App() {
         if (status !== "morphing") inputRef.current?.focus();
       }}
     >
-      <section className="mx-auto flex min-h-screen w-full max-w-[500px] flex-col items-center justify-center gap-8">
+            <section className="mx-auto flex min-h-screen w-full max-w-[500px] flex-col items-center justify-start pt-[18vh] gap-10">
         <div className="w-full text-center">
-          <h1 className="mb-2 text-sm tracking-[0.32em] uppercase opacity-70">
+          <h1 className="text-sm tracking-[0.32em] uppercase opacity-70">
             TextAlchemy
           </h1>
+          <div className="mx-auto mt-3 h-px w-12 bg-gradient-to-r from-transparent via-charcoal/40 to-transparent" />
         </div>
 
         <div ref={containerRef} className="relative w-full min-h-[140px] flex items-center justify-center">
