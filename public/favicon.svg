@@ -1,16 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="14" fill="#FDF5E6"/>
-  <!-- 烧杯 -->
-  <path d="M26 14 v16 q0 6 6 10 l4 3 q3 2 4 5 l2 6 h8 l2-6 q1-3 4-5 l4-3 q6-4 6-10 v-16"
-        fill="none" stroke="#2D2D2D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
-  <!-- 烧杯口 -->
-  <path d="M26 14 h22" stroke="#2D2D2D" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
-  <!-- 液体 -->
-  <path d="M28 40 l3 2 q4 3 5 7 l-1 3 h8 l-1-3 q1-4 5-7 l3-2"
-        fill="#2D2D2D" opacity="0.12"/>
-  <!-- 气泡 -->
-  <circle cx="38" cy="30" r="1.5" fill="#2D2D2D" opacity="0.2"/>
-  <circle cx="41" cy="25" r="1" fill="#2D2D2D" opacity="0.15"/>
-  <circle cx="36" cy="34" r="1" fill="#2D2D2D" opacity="0.15"/>
+  <g fill="none" stroke="#2D2D2D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <path d="M 22 12 L 22 28 C 22 34 26 36 30 40 L 34 44 C 35 45 35 46 35 48 L 29 48 M 35 48 L 35 46 C 35 44 36 43 38 41 L 42 37 C 46 33 46 30 46 28 L 46 12"/>
+    <line x1="22" y1="12" x2="46" y2="12"/>
+    <path d="M 24 36 C 26 39 28 41 30 44" fill="#2D2D2D" fill-opacity="0.08" stroke="none"/>
+    <circle cx="36" cy="24" r="1.2" fill="#2D2D2D" fill-opacity="0.2" stroke="none"/>
+    <circle cx="40" cy="20" r="0.9" fill="#2D2D2D" fill-opacity="0.15" stroke="none"/>
+  </g>
 </svg>
 
