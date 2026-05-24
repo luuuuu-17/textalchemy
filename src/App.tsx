@@ -8,7 +8,9 @@ type ViewState = "idle" | "typing" | "waiting" | "morphing" | "result";
 const PLACEHOLDER = "想说点什么？";
 
 function computeFontSize(_text: string): string {
-  return "1.8rem";
+  // 手机 (<640px) 用小字号，桌面用大字号
+  const isMobile = window.innerWidth < 640;
+  return isMobile ? "1.3rem" : "1.8rem";
 }
 
 function normalizeInline(text: string): string {
@@ -149,7 +151,7 @@ export default function App() {
                                         {status === "result" && resultText && (
             <div
                             className="absolute inset-0 flex items-center justify-center whitespace-normal break-keep select-none px-6 sm:px-10"
-              style={{ fontSize: computedFontSize, letterSpacing: "-0.02em", maxWidth: "90%" }}
+              style={{ fontSize: computedFontSize, letterSpacing: "-0.02em", maxWidth: "90%", overflowWrap: "break-word", wordBreak: "break-word" }}
             >
               {[...resultText].map((char, idx) => (
                 <span key={`result-${idx}`} className="inline-block">
